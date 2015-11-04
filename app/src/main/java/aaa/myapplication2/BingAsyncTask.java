@@ -52,7 +52,7 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
         super.onPostExecute(urls);
         gridView.setAdapter(null);
 
-        gridImageAdapter = new GridImageAdapter(contex, urls);
+        gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull);
         gridView.setAdapter(gridImageAdapter);
         YoYo.with(Techniques.FadeInUp).duration(1000).playOn(gridView);
     }
