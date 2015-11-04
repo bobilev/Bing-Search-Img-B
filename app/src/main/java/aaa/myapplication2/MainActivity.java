@@ -1,99 +1,90 @@
 package aaa.myapplication2;
 
-import android.os.AsyncTask;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageButton;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 
 public class MainActivity extends AppCompatActivity {
+    ImageButton btn;
+    EditText editText;
+    GridView gridView;
+    BingAsyncTask bingAsyncTask;
+    String[] urlsImages;
+    String[] urlsImagesFull;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BingAsyncTask2 bingAsyncTask = new BingAsyncTask2();
-        bingAsyncTask.execute();
-    }
-    public class BingAsyncTask2 extends AsyncTask {
+        ActionBar actionBar = getSupportActionBar();
+        getSupportActionBar().setCustomView(R.layout.actionbar);
 
-        @Override
-        protected Void doInBackground(Object... params) {
-            String API_KEY = "KOevhSWHRyykQWgIYax66BAXAjQZfWj4JY3K36xZoKA";
+        gridView = (GridView) this.findViewById(R.id.gridView);
+        btn = (ImageButton) actionBar.getCustomView().findViewById(R.id.button);
+        editText = (EditText) actionBar.getCustomView().findViewById(R.id.editText);
 
-            String link_test = "http://ip.jsontest.com/";
-            String result = "";
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+        //обработка нажатия на item в grid и открытие нового активити
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), FullImageActivity.class);
+                urlsImagesFull = bingAsyncTask.getUrlsImagesFull();
+                intent.putExtra("url", urlsImagesFull[position]);
+                Log.i("LINK", urlsImagesFull[position] + "");
+                startActivity(intent);
 
-
-//            String bingUrl = "https://api.datamarket.azure.com/Bing/SearchWeb/v1/Web?Query=%27" + searchStr + "%27" + numOfResultsStr + "&$format=json";
-            String bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27xbox%27" +
-                    "&Market=%27en-US%27&Adult=%27Moderate%27" +
-//                    "&ImageFilters=%27Size%3ASmall%27&" +
-//                    "&ImageFilters=%27Size%3AMedium%27&" +
-                    "&ImageFilters=%27Size%3Alarge%27&" +
-                    "$format=json&" +
-                    "$top=50";
-            String auth = API_KEY + ":" + API_KEY;
-            String encodedAuth = Base64.encodeToString(auth.getBytes(), Base64.NO_WRAP);
-            String accountKeyEnc = new String(encodedAuth);
-
-            URL url = null;
-            URLConnection urlConnection = null;
-
-            InputStream response = null;
-            try {
-                url = new URL(bingUrl);
-                urlConnection = url.openConnection();
-                urlConnection.setRequestProperty("Authorization", "Basic " + accountKeyEnc);
-                response = urlConnection.getInputStream();
-                String res = readStream(response);
-                Log.i("LINK", res);
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-//            Gson gson = (new GsonBuilder()).create();
-//            BingSearchResults mBingSearchResults; = gson.fromJson(res, BingSearchResults.class);
-            return null;
-        }
-        private String readStream(InputStream in) {
-            BufferedReader reader = null;
-            StringBuilder sb = new StringBuilder();
-            try {
-                reader = new BufferedReader(new InputStreamReader(in));
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+        });
+        //Запуск поиска
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String query = String.valueOf(editText.getText());
+                Log.i("LINK",query);
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(btn.getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);//убирать клавиатуру
+                YoYo.with(Techniques.ZoomOut).duration(700).playOn(gridView);
+                bingAsyncTask = new BingAsyncTask(query, urlsImages, urlsImagesFull, gridView,MainActivity.this);
+                bingAsyncTask.execute(query);
             }
-            return sb.toString();
-        }
+        });
+
     }
+    //creat menu
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_settings) {
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }
