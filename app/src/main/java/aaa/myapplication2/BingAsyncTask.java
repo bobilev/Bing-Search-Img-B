@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 /**
  * Created by aAa on 03.11.2015.
@@ -30,13 +31,15 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     GridView gridView;
     GridImageAdapter gridImageAdapter;
     Context contex;
+    ArrayList list;
 
-    public BingAsyncTask(String query, String[] urlsImages, String[] urlsImagesFull, GridView gridView,Context context){
+    public BingAsyncTask(String query, String[] urlsImages, String[] urlsImagesFull, GridView gridView,Context context, ArrayList list){
         this.query = query;
         this.urlsImages = urlsImages;
         this.urlsImagesFull = urlsImagesFull;
         this.gridView = gridView;
         this.contex = context;
+        this.list = list;
     }
 
     public String[] getUrlsImages() {
@@ -52,7 +55,7 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
         super.onPostExecute(urls);
         gridView.setAdapter(null);
 
-        gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull);
+        gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull, list);
         gridView.setAdapter(gridImageAdapter);
         YoYo.with(Techniques.FadeInUp).duration(1000).playOn(gridView);
     }

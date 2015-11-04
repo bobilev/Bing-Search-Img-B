@@ -7,23 +7,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import static android.support.v4.app.ActivityCompat.startActivity;
+import java.util.ArrayList;
 
 public class GridImageAdapter extends BaseAdapter {
     Context context;
     String[] itemsUrls;
     String[] itemsUrlsFull;
-    public GridImageAdapter(Context contex, String[] itemsUrls,String[] itemsUrlsFull) {
+    ArrayList list = new ArrayList();
+    public GridImageAdapter(Context contex, String[] itemsUrls,String[] itemsUrlsFull, ArrayList list) {
         context = contex;
         this.itemsUrls = itemsUrls;
         this.itemsUrlsFull = itemsUrlsFull;
+        this.list = list;
     }
     @Override
     public int getCount() {
@@ -43,14 +43,14 @@ public class GridImageAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ViewHolder holder;
+        final ViewHolder holder;
 
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.item_grid_adapter, null);
             holder.imageview = (ImageView) convertView.findViewById(R.id.imageItem);
             holder.radiobutton = (RadioButton) convertView.findViewById(R.id.itemRadioButton);
-
+//            holder.id = holder.radiobutton.getId();
             convertView.setTag(holder);
             convertView.setPadding(2,2,2,2);
 
@@ -75,21 +75,23 @@ public class GridImageAdapter extends BaseAdapter {
         holder.radiobutton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-//                CheckBox cb = (CheckBox) v;
-//                int id = cb.getId();
+                RadioButton cb = (RadioButton) v;
 
-//                if (itemsUrls[id]){
-//                    cb.setChecked(false);
-//                    itemsUrls[id] = false;
-//                } else {
-//                    cb.setChecked(true);
-//                    itemsUrls[id] = true;
-//                }
+                if (list.contains(position)){
+                    cb.setChecked(false);
+                    int idList = list.indexOf(position);
+                    list.remove(idList);
+                } else {
+                    list.add(position);
+                    cb.setChecked(true);
+                    Log.i("LINK","+ "+list.size());
+                }
             }
         });
 
         return convertView;
     }
+
     class ViewHolder {
         ImageView imageview;
         RadioButton radiobutton;

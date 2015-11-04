@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
     ImageButton btn;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     BingAsyncTask bingAsyncTask;
     String[] urlsImages;
     String[] urlsImagesFull;
+    ArrayList list = new ArrayList();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,18 +44,6 @@ public class MainActivity extends AppCompatActivity {
         editText = (EditText) actionBar.getCustomView().findViewById(R.id.editText);
 
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-        //обработка нажатия на item в grid и открытие нового активити
-//        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(), FullImageActivity.class);
-//                urlsImagesFull = bingAsyncTask.getUrlsImagesFull();
-//                intent.putExtra("url", urlsImagesFull[position]);
-//                Log.i("LINK", urlsImagesFull[position] + "");
-//                startActivity(intent);
-//
-//            }
-//        });
         //Запуск поиска
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(btn.getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);//убирать клавиатуру
                 YoYo.with(Techniques.ZoomOut).duration(700).playOn(gridView);
-                bingAsyncTask = new BingAsyncTask(query, urlsImages, urlsImagesFull, gridView, MainActivity.this);
+                bingAsyncTask = new BingAsyncTask(query, urlsImages, urlsImagesFull, gridView, MainActivity.this,list);
                 bingAsyncTask.execute(query);
             }
         });

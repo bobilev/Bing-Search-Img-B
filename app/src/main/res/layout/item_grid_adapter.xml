@@ -2,7 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:contextClickable="false">
 
     <ImageView
         android:layout_width="match_parent"
@@ -11,8 +13,8 @@
         android:onClick="onclickImageitem">
     </ImageView>
     <RadioButton android:id="@+id/itemRadioButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_gravity="top|right"
@@ -21,5 +23,6 @@
         android:clickable="false"
         android:elegantTextHeight="false"
         android:longClickable="false"
-        android:singleLine="false" />
+        android:singleLine="false"
+        android:button="@drawable/custom_radio_button"/>
 </FrameLayout>
