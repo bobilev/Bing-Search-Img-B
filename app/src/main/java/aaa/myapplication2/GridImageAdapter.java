@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 
@@ -19,11 +20,15 @@ public class GridImageAdapter extends BaseAdapter {
     String[] itemsUrls;
     String[] itemsUrlsFull;
     ArrayList list = new ArrayList();
-    public GridImageAdapter(Context contex, String[] itemsUrls,String[] itemsUrlsFull, ArrayList list) {
+    ImageButton btnMail;
+    ImageButton btnClear;
+    public GridImageAdapter(Context contex, String[] itemsUrls,String[] itemsUrlsFull, ArrayList list, ImageButton btnMail,ImageButton btnClear) {
         context = contex;
         this.itemsUrls = itemsUrls;
         this.itemsUrlsFull = itemsUrlsFull;
         this.list = list;
+        this.btnMail = btnMail;
+        this.btnClear = btnClear;
     }
     @Override
     public int getCount() {
@@ -81,10 +86,16 @@ public class GridImageAdapter extends BaseAdapter {
                     cb.setChecked(false);
                     int idList = list.indexOf(position);
                     list.remove(idList);
+                    if(list.size()==0){
+                        btnMail.setVisibility(View.GONE);
+                        btnClear.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     list.add(position);
                     cb.setChecked(true);
-                    Log.i("LINK","+ "+list.size());
+                    btnMail.setVisibility(View.VISIBLE);
+                    btnClear.setVisibility(View.GONE);
+                    Log.i("LINK", "+ " + list.size());
                 }
             }
         });

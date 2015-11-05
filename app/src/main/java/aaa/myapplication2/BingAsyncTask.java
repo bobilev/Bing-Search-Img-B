@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.GridView;
+import android.widget.ImageButton;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -32,14 +33,18 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     GridImageAdapter gridImageAdapter;
     Context contex;
     ArrayList list;
+    ImageButton btnMail;
+    ImageButton btnClear;
 
-    public BingAsyncTask(String query, String[] urlsImages, String[] urlsImagesFull, GridView gridView,Context context, ArrayList list){
+    public BingAsyncTask(String query, String[] urlsImages, String[] urlsImagesFull, GridView gridView,Context context, ArrayList list,ImageButton btnMail,ImageButton btnClear){
         this.query = query;
         this.urlsImages = urlsImages;
         this.urlsImagesFull = urlsImagesFull;
         this.gridView = gridView;
         this.contex = context;
         this.list = list;
+        this.btnMail = btnMail;
+        this.btnClear = btnClear;
     }
 
     public String[] getUrlsImages() {
@@ -55,7 +60,7 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
         super.onPostExecute(urls);
         gridView.setAdapter(null);
 
-        gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull, list);
+        gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull, list, btnMail, btnClear);
         gridView.setAdapter(gridImageAdapter);
         YoYo.with(Techniques.FadeInUp).duration(1000).playOn(gridView);
     }
