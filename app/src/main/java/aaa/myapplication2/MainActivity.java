@@ -44,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
     BingAsyncTask bingAsyncTask;
     String[] urlsImages ;
     String[] urlsImagesFull ;
-    ArrayList list = new ArrayList();
-    ImageView imgD;
+    ArrayList<Integer> list = new ArrayList();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setCustomView(R.layout.actionbar);
 
         gridView = (GridView) this.findViewById(R.id.gridView);
-        imgD = (ImageView) this.findViewById(R.id.imageView);
         Log.i("LINK", gridView.getId()+"");
         btn = (ImageButton) actionBar.getCustomView().findViewById(R.id.button);
         btnClear = (ImageButton) actionBar.getCustomView().findViewById(R.id.buttonClear);
@@ -94,31 +92,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_SEND);
-
-                Picasso.with(getApplicationContext())
-                        .load("http://ts2.mm.bing.net/th?id=OIP.Mc54ec206ed65ec6681a3735a3deb419eo1&pid=15.1")
-                        .resize(180, 180)
-                        .into(imgD);
-
-//                imgD.buildDrawingCache();
-//                Bitmap bmap=imgD.getDrawingCache();
+                int choois = list.get(0);
+                String urlImage = bingAsyncTask.getUrlsImagesFull()[choois];
                 Bitmap bmap;
-
                 BitmapFactory.Options bmOptions;
                 bmOptions = new BitmapFactory.Options();
                 bmOptions.inSampleSize = 1;
-                bmap = LoadImage("http://ts2.mm.bing.net/th?id=OIP.Mc54ec206ed65ec6681a3735a3deb419eo1&pid=15.1", bmOptions);
-//                imgD.setImageBitmap(bmap);
+                bmap = LoadImage(urlImage, bmOptions);
 
                 Log.i("LINK", " ;) 1");
                 File root=getExternalFilesDir(null);
-                File file = new File(root+"/test.png");
+                File file = new File(root+"/test.jpg");
                 OutputStream out = null;
 
                 Log.i("LINK", " ;) 2");
                 try {
                     out = new FileOutputStream(file);
-                    bmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                    bmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                     Log.i("LINK", " ;) 3");
                     out.flush();
                     out.close();
@@ -128,8 +118,8 @@ public class MainActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                File imgFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/android_main_screen.jpg");
-//                Uri imageuri = Uri.fromFile(imgFile);
+                File imgFile = new File(root+"/test.jpg");
+
                 i.setType("image/*");
                 i.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"Dimitri011s@yandex.ru"});
                 i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imgFile));

@@ -19,7 +19,7 @@ public class GridImageAdapter extends BaseAdapter {
     Context context;
     String[] itemsUrls;
     String[] itemsUrlsFull;
-    ArrayList list = new ArrayList();
+    ArrayList<Integer> list = new ArrayList();
     ImageButton btnMail;
     ImageButton btnClear;
     public GridImageAdapter(Context contex, String[] itemsUrls,String[] itemsUrlsFull, ArrayList list, ImageButton btnMail,ImageButton btnClear) {

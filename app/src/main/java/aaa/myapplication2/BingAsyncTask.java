@@ -32,7 +32,7 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     GridView gridView;
     GridImageAdapter gridImageAdapter;
     Context contex;
-    ArrayList list;
+    ArrayList<Integer> list;
     ImageButton btnMail;
     ImageButton btnClear;
 
