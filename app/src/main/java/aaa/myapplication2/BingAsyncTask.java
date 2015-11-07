@@ -89,16 +89,11 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
-    protected void onCancelled() {
-        super.onCancelled();
-    }
-
-    @Override
     protected String[] doInBackground(String... params) {
         String API_KEY = "KOevhSWHRyykQWgIYax66BAXAjQZfWj4JY3K36xZoKA";
         String result = "";
         String bingUrl = null;
-        
+
         try {
             bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27"+ URLEncoder.encode(params[0], "utf8")+"%27" +
                     "&Market=%27ru-RU%27&Adult=%27Moderate%27" +

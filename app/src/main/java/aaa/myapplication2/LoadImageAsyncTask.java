@@ -126,7 +126,7 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
                 Log.i("LINK"," Не подключился -3" +urls);
             }
         } catch (Exception ex) {
-            Log.i("LINK"," Не скачал -2");
+            Log.i("LINK"," Не скачал -2 " +strURL);
         }
         return inputStream;
     }
