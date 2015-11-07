@@ -77,7 +77,8 @@ public class GridImageAdapter extends BaseAdapter {
 
             public void onClick(View v) {
                 Intent intent = new Intent(context, FullImageActivity.class);
-                intent.putExtra("url", itemsUrlsFull[position]);
+                intent.putExtra("urlFull", itemsUrlsFull[position]);
+                intent.putExtra("urlmin", itemsUrls[position]);
                 Log.i("LINK", itemsUrlsFull[position] + "");
                 context.startActivity(intent);
             }

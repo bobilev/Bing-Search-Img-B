@@ -30,35 +30,44 @@ public class FullImageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        String position = intent.getExtras().getString("url");
-        proverkaHttpAsyncTask = new ProverkaHttpAsyncTask();
-        proverkaHttpAsyncTask.execute(position);
+        String positionFull = intent.getExtras().getString("urlFull");
+        String positionMin = intent.getExtras().getString("urlmin");
+        proverkaHttpAsyncTask = new ProverkaHttpAsyncTask(positionFull,positionMin);
+        proverkaHttpAsyncTask.execute();
     }
 
-    public String proerka(String link) {
-        URL url = null;
+    public String proverka(String linkFull,String linkMin) {
+        URL urlhttp = null;
+        URL urlhttps = null;
         String result = null;
         try {
-            url = new URL("http://" + link);
+            urlhttp = new URL("http://" + linkFull);
+            urlhttps = new URL("https://" + linkFull);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         URLConnection conn = null;
+        URLConnection conns = null;
         try {
-            conn = url.openConnection();
+            conn = urlhttp.openConnection();
+            conns = urlhttps.openConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         HttpURLConnection httpConn = (HttpURLConnection) conn;
+        HttpURLConnection httpConns = (HttpURLConnection) conns;
 
         try {
             if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                result = "http://" + link;
-                Log.i("LINK","proverka = "+result);
+                result = "http://" + linkFull;
+                Log.i("LINK","proverka 1= "+httpConn.getResponseCode() +"/"+result);
+            } else if(httpConns.getResponseCode() == HttpURLConnection.HTTP_OK){
+                result = "https://" + linkFull;
+                Log.i("LINK","proverka 2 "+httpConn.getResponseCode() +"/"+result);
             } else {
-                result = "https://" + link;
-                Log.i("LINK","proverka = "+result);
+                result = "http://"+linkMin;
+                Log.i("LINK","proverka 3= "+httpConn.getResponseCode() +"/"+result);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,8 +75,14 @@ public class FullImageActivity extends AppCompatActivity {
         return result;
     }
 
-    class ProverkaHttpAsyncTask extends AsyncTask<String, Void, String> {
+    class ProverkaHttpAsyncTask extends AsyncTask<Void, Void, String> {
+        String positionFull;
+        String positionMin;
 
+        public ProverkaHttpAsyncTask(String positionFull,String positionMin){
+            this.positionFull = positionFull;
+            this.positionMin = positionMin;
+        }
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -81,8 +96,8 @@ public class FullImageActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            String link = proerka(params[0]);
+        protected String doInBackground(Void... params) {
+            String link = proverka(positionFull, positionMin);
             return link;
         }
     }
