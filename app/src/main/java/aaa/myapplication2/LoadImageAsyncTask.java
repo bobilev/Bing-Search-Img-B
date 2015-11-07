@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.NetworkOnMainThreadException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -25,15 +26,20 @@ import java.util.ArrayList;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> {
+public class LoadImageAsyncTask extends AsyncTask<Void, Void, ArrayList<Uri>> {
     ArrayList<Uri> list = new ArrayList<>();
     File root;
     Context context;
     ProgressDialog progressDialog;
+    String[] urlsImagesFull;
+    String[] urlsImages;
 
-    public LoadImageAsyncTask(File root, Context context){
+
+    public LoadImageAsyncTask(File root, Context context,String[] urlsImagesFull,String[] urlsImages){
         this.root = root;
         this.context = context;
+        this.urlsImagesFull = urlsImagesFull;
+        this.urlsImages = urlsImages;
     }
 
     @Override
@@ -56,14 +62,14 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
     }
 
     @Override
-    protected ArrayList<Uri> doInBackground(String... params) {
+    protected ArrayList<Uri> doInBackground(Void... params) {
         Bitmap bmap;
         BitmapFactory.Options bmOptions;
         bmOptions = new BitmapFactory.Options();
         bmOptions.inSampleSize = 1;
         int name = 0;
-        for(String link:params){
-            bmap = LoadImage(link, bmOptions);
+        for(String link:urlsImagesFull){
+            bmap = LoadImage(link,urlsImages[name], bmOptions);
 
             File file = new File(root+"/test"+name+".jpg");
             OutputStream out = null;
@@ -91,11 +97,11 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
         return list;
     }
 
-    public Bitmap LoadImage(String URL, BitmapFactory.Options options) {
+    public Bitmap LoadImage(String URLfull, String URLmin, BitmapFactory.Options options) {
         Bitmap bitmap = null;
         InputStream in = null;
         try {
-            in = OpenHttpConnection(URL);
+            in = OpenHttpConnection(URLfull,URLmin);
             bitmap = BitmapFactory.decodeStream(in, null, options);
             in.close();
         } catch (IOException e1) {
@@ -103,18 +109,24 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
         }
         return bitmap;
     }
-    private InputStream OpenHttpConnection(String strURL) throws IOException{
+    private InputStream OpenHttpConnection(String URLfull, String URLmin){
         InputStream inputStream = null;
-        URL url = new URL("http://"+strURL);
-        URL urls = new URL("https://"+strURL);
-        URLConnection conn = url.openConnection();
+        URL url;
+        URL urls;
+        URL urlmin;
+        URLConnection conn;
+        HttpURLConnection httpConn;
 
         try{
-            HttpURLConnection httpConn = (HttpURLConnection)conn;
+            url = new URL("http://"+URLfull);
+            urls = new URL("https://"+URLfull);
+
+            conn = url.openConnection();
+            httpConn = (HttpURLConnection)conn;
             httpConn.setRequestMethod("GET");
             httpConn.connect();
 
-            if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {//http
                 inputStream = httpConn.getInputStream();
             } else {
                 conn = urls.openConnection();
@@ -122,12 +134,29 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
                 httpConn.setRequestMethod("GET");
                 httpConn.connect();
                 inputStream = httpConn.getInputStream();
-
+//                if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK){//https
+//                    inputStream = httpConn.getInputStream();
+//                } else {
+//                    conn = urls.openConnection();
+//                    httpConn = (HttpURLConnection)conn;
+//                    httpConn.setRequestMethod("GET");
+//                    httpConn.connect();
+//                    inputStream = httpConn.getInputStream();//запаска
+//                }
                 Log.i("LINK"," Не подключился -3" +urls);
             }
-        } catch (Exception ex) {
-            Log.i("LINK"," Не скачал -2 " +strURL);
+        } catch (IOException ex) {
+            try{
+                urlmin = new URL("http://"+URLmin);
+                conn = urlmin.openConnection();
+                httpConn = (HttpURLConnection) conn;
+                httpConn.setRequestMethod("GET");
+                httpConn.connect();
+                inputStream = httpConn.getInputStream();//запаска
+                Log.i("LINK", " Не скачал -2 " + urlmin);
+            }catch (IOException ex1) {}
         }
         return inputStream;
     }
+
 }

@@ -77,17 +77,19 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         btnMail.setOnClickListener(new View.OnClickListener() {//отправка на почту
             @Override
             public void onClick(View v) {
-                String[] urlsImages = new String[list.size()];
+                String[] urlsImagesFull = new String[list.size()];
+                String[] urlsImagesMin = new String[list.size()];
                 File root = getExternalFilesDir(null);
                 int i = 0;
                 for (int choois : list) {
-                    urlsImages[i] = bingAsyncTask.getUrlsImagesFull()[choois];
+                    urlsImagesFull[i] = bingAsyncTask.getUrlsImagesFull()[choois];
+                    urlsImagesMin[i] = bingAsyncTask.getUrlsImages()[choois];
                     i++;
                 }
-                Log.i("LINK", "urlsImages" + urlsImages.length);
-                loadImageAsyncTask = new LoadImageAsyncTask(root, MainActivity.this);
-                loadImageAsyncTask.execute(urlsImages);
+                Log.i("LINK", "urlsImages" + urlsImagesFull.length);
                 list.clear();
+                loadImageAsyncTask = new LoadImageAsyncTask(root, MainActivity.this, urlsImagesFull, urlsImagesMin);
+                loadImageAsyncTask.execute();
             }
         });
     }
