@@ -1,14 +1,6 @@
 package aaa.myapplication2;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,21 +12,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
-import com.squareup.picasso.Picasso;
-
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -70,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btnClear.setVisibility(View.VISIBLE);
                 btnMail.setVisibility(View.GONE);
+                list.clear();
 
                 String query = String.valueOf(editText.getText());
                 Log.i("LINK", query);
@@ -103,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("LINK","urlsImages"+urlsImages.length);
                 loadImageAsyncTask = new LoadImageAsyncTask(root, MainActivity.this);
                 loadImageAsyncTask.execute(urlsImages);
+                list.clear();
             }
         });
     }

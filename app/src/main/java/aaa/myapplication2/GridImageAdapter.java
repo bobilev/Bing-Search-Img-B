@@ -3,6 +3,7 @@ package aaa.myapplication2;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
@@ -60,7 +63,7 @@ public class GridImageAdapter extends BaseAdapter {
             convertView.setPadding(2, 2, 2, 2);
 
             Picasso.with(context)
-                    .load(itemsUrls[position])
+                    .load("http://"+itemsUrls[position])
                     .resize(180,180)
                     .centerCrop()
                     .into(holder.imageview);
@@ -83,20 +86,28 @@ public class GridImageAdapter extends BaseAdapter {
             public void onClick(View v) {
                 RadioButton cb = (RadioButton) v;
 
-                if (list.contains(position)){
+                if (list.contains(position)) {
                     cb.setChecked(false);
                     int idList = list.indexOf(position);
                     list.remove(idList);
-                    if(list.size()==0){
+                    if (list.size() == 0) {
                         btnMail.setVisibility(View.GONE);
                         btnClear.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    list.add(position);
-                    cb.setChecked(true);
-                    btnMail.setVisibility(View.VISIBLE);
-                    btnClear.setVisibility(View.GONE);
-                    Log.i("LINK", "+ " + list.size());
+                    if(list.size()<5){
+                        list.add(position);
+                        cb.setChecked(true);
+                        btnMail.setVisibility(View.VISIBLE);
+                        btnClear.setVisibility(View.GONE);
+                        Log.i("LINK", "+ " + list.size());
+                    } else {
+                        cb.setChecked(false);
+                        Toast toast = Toast.makeText(context, "Только 5 картинок", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
+                    }
+
                 }
             }
         });

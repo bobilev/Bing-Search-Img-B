@@ -1,5 +1,6 @@
 package aaa.myapplication2;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
@@ -21,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by aAa on 03.11.2015.
@@ -35,6 +38,7 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     ArrayList<Integer> list;
     ImageButton btnMail;
     ImageButton btnClear;
+    ProgressDialog progressDialog;
 
     public BingAsyncTask(String query, String[] urlsImages, String[] urlsImagesFull, GridView gridView,Context context, ArrayList list,ImageButton btnMail,ImageButton btnClear){
         this.query = query;
@@ -62,11 +66,13 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
 
         gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull, list, btnMail, btnClear);
         gridView.setAdapter(gridImageAdapter);
+        progressDialog.dismiss();
         YoYo.with(Techniques.FadeInUp).duration(1000).playOn(gridView);
     }
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        progressDialog = ProgressDialog.show(contex, "","");
     }
 
     @Override
@@ -118,11 +124,11 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
         for(int i=0; i<size; i++){
             jsonObject = (JSONObject) ((JSONArray) jsonObjectFull.get("results")).get(i);
             String urlFull = (String) jsonObject.get("MediaUrl");
-            urlsImagesFull[i] = urlFull;
+            urlsImagesFull[i] = regEx(urlFull);
             jsonObject = (JSONObject) jsonObject.get("Thumbnail");
             String urlImg = (String) jsonObject.get("MediaUrl");
             Log.i("LINK","url = "+urlImg);
-            urlsImages[i] = urlImg;
+            urlsImages[i] = regEx(urlImg);
 
         }
         Log.i("LINK",urlsImages.length+" 2");
@@ -149,5 +155,11 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
             }
         }
         return sb.toString();
+    }
+    public String regEx(String link) {
+        Pattern pattern = Pattern.compile("http://");
+        Matcher matcher = pattern.matcher(link);
+        String result = matcher.replaceFirst("");
+        return  result;
     }
 }

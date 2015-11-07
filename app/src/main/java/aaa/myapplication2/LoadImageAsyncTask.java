@@ -1,13 +1,13 @@
 package aaa.myapplication2;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -22,12 +22,15 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-import static android.support.v4.app.ActivityCompat.startActivity;
+import javax.net.ssl.HttpsURLConnection;
+
 
 public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> {
-    ArrayList<Uri> list = new ArrayList<Uri>();
+    ArrayList<Uri> list = new ArrayList<>();
     File root;
     Context context;
+    ProgressDialog progressDialog;
+
     public LoadImageAsyncTask(File root, Context context){
         this.root = root;
         this.context = context;
@@ -36,11 +39,13 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        progressDialog = ProgressDialog.show(context, "","");
     }
 
     @Override
     protected void onPostExecute(ArrayList<Uri> uris) {
         super.onPostExecute(uris);
+        progressDialog.dismiss();
         Intent i = new Intent(Intent.ACTION_SEND_MULTIPLE);//нужно для отправки нескольких фото (ACTION_SEND_MULTIPLE)
         i.setType("image/*");
         i.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{"Dimitri011s@yandex.ru"});
@@ -94,12 +99,14 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
             bitmap = BitmapFactory.decodeStream(in, null, options);
             in.close();
         } catch (IOException e1) {
+            Log.i("LINK"," Не скачал");
         }
         return bitmap;
     }
     private InputStream OpenHttpConnection(String strURL) throws IOException{
         InputStream inputStream = null;
-        URL url = new URL(strURL);
+        URL url = new URL("http://"+strURL);
+        URL urls = new URL("https://"+strURL);
         URLConnection conn = url.openConnection();
 
         try{
@@ -109,8 +116,17 @@ public class LoadImageAsyncTask extends AsyncTask<String, Void, ArrayList<Uri>> 
 
             if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 inputStream = httpConn.getInputStream();
+            } else {
+                conn = urls.openConnection();
+                httpConn = (HttpURLConnection)conn;
+                httpConn.setRequestMethod("GET");
+                httpConn.connect();
+                inputStream = httpConn.getInputStream();
+
+                Log.i("LINK"," Не подключился -3" +urls);
             }
         } catch (Exception ex) {
+            Log.i("LINK"," Не скачал -2");
         }
         return inputStream;
     }
