@@ -1,6 +1,7 @@
 package aaa.myapplication2;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.ActionBar;
@@ -29,12 +30,15 @@ import java.util.regex.Pattern;
 public class MainActivity extends AppCompatActivity implements View.OnKeyListener {
     ImageButton btn,btnClear,btnMail;
     EditText editText;
-    GridView gridView ;
     BingAsyncTask bingAsyncTask;
     LoadImageAsyncTask loadImageAsyncTask;
     String[] urlsImages ;
     String[] urlsImagesFull ;
     ArrayList<Integer> list = new ArrayList();
+    GridView gridView;
+    String query;
+    int orentir;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +108,32 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         bingAsyncTask.execute(poisk);
     }
 
+    public int getScreenOrientation(){
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            return 0;//Портретная ориентация
+        } else {
+            return 1;//Альбомная ориентация
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("LINK", "было  " + orentir);
+        Log.i("LINK", "Стало  " + getScreenOrientation());
+        if(orentir != getScreenOrientation()){
+            orentir = getScreenOrientation();
+            searchBing(query);
+        }
+        if(query == null){
+            Log.i("LINK", "Пусто "+query);
+
+        } else {
+            Log.i("LINK", "чето есть");
+//            query = String.valueOf(editText.getText());
+//            searchBing(query);
+        }
+    }
 
     //creat menu
     @Override
@@ -124,12 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i("LINK"," ;) -destroy");
-    }
-
-    @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
             Log.i("LINK","+++");
@@ -137,4 +160,36 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         }
         return false;
     }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        onDestroy();
+//        String query = String.valueOf(editText.getText());
+//        searchBing(query);
+//
+//    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("LINK", "+++");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        query = editText.getText().toString();
+        outState.putString("string", query);
+        outState.putInt("int", orentir);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        query = savedInstanceState.getString("string");
+        orentir = savedInstanceState.getInt("int");
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i("LINK", "+++ R" + query);
+    }
+
 }
