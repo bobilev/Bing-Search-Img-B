@@ -25,6 +25,7 @@ public class FullImageActivity extends AppCompatActivity {
                 .load(position)
                 .fit()
 //                .resize(200, 250)
+//                .centerCrop()
                 .into(imageViewFull);
 
     }

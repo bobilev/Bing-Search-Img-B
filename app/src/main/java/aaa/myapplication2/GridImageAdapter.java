@@ -55,13 +55,14 @@ public class GridImageAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.item_grid_adapter, null);
             holder.imageview = (ImageView) convertView.findViewById(R.id.imageItem);
             holder.radiobutton = (RadioButton) convertView.findViewById(R.id.itemRadioButton);
-//            holder.id = holder.radiobutton.getId();
+
             convertView.setTag(holder);
-            convertView.setPadding(2,2,2,2);
+            convertView.setPadding(2, 2, 2, 2);
 
             Picasso.with(context)
                     .load(itemsUrls[position])
                     .resize(180,180)
+                    .centerCrop()
                     .into(holder.imageview);
         } else {
             holder = (ViewHolder) convertView.getTag();

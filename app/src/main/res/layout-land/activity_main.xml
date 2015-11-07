@@ -10,7 +10,9 @@
         android:id="@+id/gridView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:numColumns="6"
+        android:numColumns="7"
+        android:listSelector="@null"
+        android:stretchMode="columnWidth"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true" />
 </RelativeLayout>
