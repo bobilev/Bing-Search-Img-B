@@ -1,10 +1,13 @@
 package aaa.myapplication2;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +17,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
             @Override
             public void onClick(View v) {
                 String query = String.valueOf(editText.getText());
-
                 searchBing(query);
             }
         });

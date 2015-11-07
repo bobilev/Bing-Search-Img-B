@@ -2,11 +2,15 @@ package aaa.myapplication2;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
@@ -67,6 +71,11 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     protected void onPostExecute(String[] urls) {
         super.onPostExecute(urls);
         gridView.setAdapter(null);
+        if(urls.length == 0){
+            Toast toast = Toast.makeText(contex, "Bing ничего не нашел", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
 
         gridImageAdapter = new GridImageAdapter(contex, urls, urlsImagesFull, list, btnMail, btnClear);
         gridView.setAdapter(gridImageAdapter);
@@ -80,11 +89,16 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     }
 
     @Override
+    protected void onCancelled() {
+        super.onCancelled();
+    }
+
+    @Override
     protected String[] doInBackground(String... params) {
         String API_KEY = "KOevhSWHRyykQWgIYax66BAXAjQZfWj4JY3K36xZoKA";
         String result = "";
         String bingUrl = null;
-
+        
         try {
             bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27"+ URLEncoder.encode(params[0], "utf8")+"%27" +
                     "&Market=%27ru-RU%27&Adult=%27Moderate%27" +
@@ -172,5 +186,15 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
         Matcher matcher = pattern.matcher(link);
         String result = matcher.replaceFirst("");
         return  result;
+    }
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            Log.i("LINK","da");
+            return true;
+        }
+        Log.i("LINK","Non E");
+        return false;
     }
 }
