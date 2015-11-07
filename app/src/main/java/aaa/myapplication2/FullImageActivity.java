@@ -74,8 +74,9 @@ public class FullImageActivity extends AppCompatActivity {
             Picasso.with(getApplicationContext())
                     .load(s)
                     .fit()
-//                .resize(200, 250)
-                    .centerCrop()
+//                    .resize(200, 250)
+//                    .centerCrop()
+                    .centerInside()
                     .into(imageViewFull);
         }
 

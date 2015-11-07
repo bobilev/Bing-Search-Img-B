@@ -63,9 +63,10 @@ public class GridImageAdapter extends BaseAdapter {
             convertView.setPadding(2, 2, 2, 2);
 
             Picasso.with(context)
-                    .load("http://"+itemsUrls[position])
+                    .load("http://" + itemsUrls[position])
                     .resize(180,180)
                     .centerCrop()
+//                    .centerInside()
                     .into(holder.imageview);
         } else {
             holder = (ViewHolder) convertView.getTag();

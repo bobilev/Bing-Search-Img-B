@@ -18,9 +18,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,17 +83,23 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
     protected String[] doInBackground(String... params) {
         String API_KEY = "KOevhSWHRyykQWgIYax66BAXAjQZfWj4JY3K36xZoKA";
         String result = "";
+        String bingUrl = null;
 
-        String bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27"+params[0]+"%27" +
-                "&Market=%27en-US%27&Adult=%27Moderate%27" +
-//                    "&ImageFilters=%27Size%3ASmall%27&" +
-//                    "&ImageFilters=%27Size%3AMedium%27&" +
-                "&ImageFilters=%27Size%3Alarge%27&" +
-                "$format=json&" +
-                "$top=50";
+        try {
+            bingUrl = "https://api.datamarket.azure.com/Bing/Search/v1/Image?Query=%27"+ URLEncoder.encode(params[0], "utf8")+"%27" +
+                    "&Market=%27ru-RU%27&Adult=%27Moderate%27" +
+    //                    "&ImageFilters=%27Size%3ASmall%27&" +
+    //                    "&ImageFilters=%27Size%3AMedium%27&" +
+                    "&ImageFilters=%27Size%3Alarge%27&" +
+                    "$format=json&" +
+                    "$top=50";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         String auth = API_KEY + ":" + API_KEY;
         String encodedAuth = Base64.encodeToString(auth.getBytes(), Base64.NO_WRAP);
         String accountKeyEnc = new String(encodedAuth);
+
 
         URL url = null;
         URLConnection urlConnection = null;
@@ -97,6 +107,7 @@ public class BingAsyncTask extends AsyncTask<String, Void, String[]> {
         InputStream response = null;
         try {
             url = new URL(bingUrl);
+            Log.i("LINK","url valid = "+url);
             urlConnection = url.openConnection();
             urlConnection.setRequestProperty("Authorization", "Basic " + accountKeyEnc);
             response = urlConnection.getInputStream();
