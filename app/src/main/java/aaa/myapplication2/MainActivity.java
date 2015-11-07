@@ -2,13 +2,10 @@ package aaa.myapplication2;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,15 +14,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnKeyListener {
     ImageButton btn,btnClear,btnMail;
@@ -125,16 +118,18 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         Log.i("LINK", "Стало  " + getScreenOrientation());
         if(orentir != getScreenOrientation()){
             orentir = getScreenOrientation();
-            searchBing(query);
+            if(!query.equals("")) {
+                searchBing(query);
+            }
         }
-        if(query == null){
-            Log.i("LINK", "Пусто "+query);
-
-        } else {
-            Log.i("LINK", "чето есть");
+//        if(query == null){
+//            Log.i("LINK", "Пусто "+query);
+//
+//        } else {
+//            Log.i("LINK", "чето есть");
 //            query = String.valueOf(editText.getText());
 //            searchBing(query);
-        }
+//        }
     }
 
     //creat menu
