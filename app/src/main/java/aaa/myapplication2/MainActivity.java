@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
                     i++;
                 }
                 Log.i("LINK", "urlsImages" + urlsImagesFull.length);
-                list.clear();
+//                list.clear();
                 loadImageAsyncTask = new LoadImageAsyncTask(root, MainActivity.this, urlsImagesFull, urlsImagesMin);
                 loadImageAsyncTask.execute();
             }
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements View.OnKeyListene
         int id = item.getItemId();
         if(id == R.id.action_settings) {
 
-            return true;
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }
